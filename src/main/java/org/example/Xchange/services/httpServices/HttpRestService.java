@@ -1,5 +1,6 @@
 package org.example.Xchange.services.httpServices;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -9,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.Xchange.configuration.XchangeProperty;
 import org.example.Xchange.exception.ApiException;
+import org.example.Xchange.models.FxRateListWrapper;
+import org.example.Xchange.models.FxRateSingleWrapper;
+import org.example.Xchange.models.FxRateWrapper;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -162,12 +166,11 @@ public class HttpRestService {
      * HTTP GET Request to send and receive json objects .
      *
      * @param endpoint The endpoint to contact.
-     * @param <T>      type T
      * @return The mono of type T
      */
-    public <T> Mono<T> get(URI endpoint, Class<T> tClass) {
+    public Mono<? extends FxRateWrapper> get(URI endpoint) {
         logInputParams(endpoint);
-        Mono<T> exchangeToMono = this.webClient
+        Mono<FxRateWrapper> exchangeToMono = this.webClient
                 .get()
                 .uri(endpoint)
                 .headers(generateHttpHeaders())
@@ -184,10 +187,18 @@ public class HttpRestService {
                                         JsonNode jsonNode = xmlMapper.readTree(body);
                                         ObjectMapper jsonMapper = new ObjectMapper();
                                         String json = jsonMapper.writeValueAsString(jsonNode);
+                                        System.err.println("PICKING:::>> "+json.charAt(10));
                                         System.err.println("RESPONSE BODY::>> " + json);
-                                        T response = jsonMapper.readValue(json, tClass);
+                                        boolean jsonIsAListWrapper = String.valueOf(json.charAt(10)).equalsIgnoreCase("[");
+                                        boolean jsonIsAnError = json.contains("OprlErr");
+                                        System.err.println("VALIDATION::>> " + jsonIsAListWrapper);
+                                        Class<? extends FxRateWrapper> tClass = jsonIsAListWrapper || jsonIsAnError ? FxRateListWrapper.class : FxRateSingleWrapper.class;
+                                        FxRateWrapper response = jsonMapper.readValue(json, tClass);
+                                        if (jsonIsAnError){
+                                            throw toApiException(response.getError().getErrorDescription(), HttpStatus.BAD_REQUEST, HttpMethod.GET);
+                                        }
                                         return Mono.just(response);
-                                    } catch (Exception e) {
+                                    } catch (ApiException | JsonProcessingException e) {
                                         return Mono.error(e);
                                     }
                                 }
