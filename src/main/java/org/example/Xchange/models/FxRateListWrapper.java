@@ -3,13 +3,12 @@ package org.example.Xchange.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,18 +34,18 @@ public class FxRateListWrapper extends FxRateWrapper {
         private String date;
 
         @JsonProperty("CcyAmt")
-        private List<CcyAmt> ccyAmtList;
+        private List<CurrencyAmount> currencyAmountList;
 
 
         @Setter
         @Getter
-        public static class CcyAmt {
+        public static class CurrencyAmount {
 
             @JsonProperty("Ccy")
             private String currency;
 
             @JsonProperty("Amt")
-            private String amount;
+            private BigDecimal amount;
 
         }
     }
