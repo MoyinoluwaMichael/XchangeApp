@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +34,6 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
         validateRequestPayload(currencyConverterRequest);
         String currentDateInString = getCurrentDateInString();
         boolean isAnIntraConversion = currencyConverterRequest.getBaseCurrency().equalsIgnoreCase(EUR) || currencyConverterRequest.getTargetCurrency().equalsIgnoreCase(EUR);
-
-//        FxRateSingleWrapper baseCurrencyRate = getCurrencyRate(currencyConverterRequest.getBaseCurrency(), currencyConverterRequest.getRateType(), currentDateInString);
-//        FxRateSingleWrapper targetCurrencyRate = getCurrencyRate(currencyConverterRequest.getTargetCurrency(), currencyConverterRequest.getRateType(), currentDateInString);
-
         if (isAnIntraConversion) return this.processIntraConversion(currencyConverterRequest, currentDateInString);
         else return this.processInterConversion(currencyConverterRequest, currentDateInString);
 
@@ -45,7 +42,40 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
     private Mono<CurrencyConverterResponse> processInterConversion(
             CurrencyConverterRequest currencyConverterRequest, String currentDateInString
     ) {
-        return null;
+        return this.getCurrencyRate(currencyConverterRequest.getBaseCurrency(), currencyConverterRequest.getRateType(), currentDateInString).flatMap(
+                baseCurrencyRateResponse -> {
+                    FxRateSingleWrapper baseCurrencyRate = (FxRateSingleWrapper) baseCurrencyRateResponse;
+                    BigDecimal baseExchangeRate = BigDecimal.ONE.divide(baseCurrencyRate.getFxRates().getCurrencyAmountList().get(1).getAmount(), 50, RoundingMode.HALF_UP);
+
+                    return this.getCurrencyRate(currencyConverterRequest.getTargetCurrency(), currencyConverterRequest.getRateType(), currentDateInString).flatMap(
+                            targetCurrencyRateResponse -> {
+                                FxRateSingleWrapper targetCurrencyRate = (FxRateSingleWrapper) targetCurrencyRateResponse;
+                                BigDecimal targetExchangeRate = BigDecimal.ONE.divide(targetCurrencyRate.getFxRates().getCurrencyAmountList().get(1).getAmount(), 50, RoundingMode.HALF_UP);
+                                BigDecimal exchangeRate = baseExchangeRate.divide(targetExchangeRate, 50, RoundingMode.HALF_UP);
+                                BigDecimal conversionAmount = currencyConverterRequest.getAmount().multiply(exchangeRate).setScale(5, RoundingMode.HALF_UP);
+                                FxRateListWrapper.FxRate fxRate = new FxRateListWrapper.FxRate();
+                                fxRate.setDate(currentDateInString);
+                                fxRate.setType(currencyConverterRequest.getRateType());
+                                FxRateListWrapper.FxRate.CurrencyAmount baseCurrencyAmount = new FxRateListWrapper.FxRate.CurrencyAmount();
+                                baseCurrencyAmount.setCurrency(currencyConverterRequest.getBaseCurrency());
+                                baseCurrencyAmount.setAmount(BigDecimal.ONE);
+                                FxRateListWrapper.FxRate.CurrencyAmount targetCurrencyAmount = new FxRateListWrapper.FxRate.CurrencyAmount();
+                                targetCurrencyAmount.setCurrency(currencyConverterRequest.getTargetCurrency());
+                                targetCurrencyAmount.setAmount(exchangeRate.setScale(5, RoundingMode.HALF_UP));
+                                fxRate.setCurrencyAmountList(List.of(baseCurrencyAmount, targetCurrencyAmount));
+                                return Mono.just(
+                                        CurrencyConverterResponse.builder()
+                                                .baseCurrency(currencyConverterRequest.getBaseCurrency())
+                                                .targetCurrency(currencyConverterRequest.getTargetCurrency())
+                                                .amount(currencyConverterRequest.getAmount())
+                                                .rate(fxRate)
+                                                .conversionAmount(conversionAmount)
+                                                .build()
+                                );
+                            }
+                    );
+                }
+        );
     }
 
     private Mono<CurrencyConverterResponse> processIntraConversion(
