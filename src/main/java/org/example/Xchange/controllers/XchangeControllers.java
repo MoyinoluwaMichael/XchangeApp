@@ -23,7 +23,7 @@ public class XchangeControllers {
     @Operation(summary = "Retrieve current exchange rates")
     @GetMapping("/currentRates")
     public ResponseEntity<Mono<RestApiResponse<FxRates>>> getCurrentExchangeRates(
-            @RequestParam(name = "type") String type
+            @RequestParam(name = "type", required = false) String type
     ) {
 
         Mono<FxRates> exchangeRatesResponseMono = xchangeService.getCurrentExchangeRates(type);
@@ -38,11 +38,11 @@ public class XchangeControllers {
     @Operation(summary = "Retrieve exchange rates for the specified date")
     @GetMapping("/rates")
     public ResponseEntity<Mono<RestApiResponse<FxRates>>> getRatesForSpecifiedDate(
-            @RequestParam(name = "type") String type,
+            @RequestParam(name = "type", required = false) String type,
             @RequestParam(name = "date") String date
     ) {
 
-        Mono<FxRates> exchangeRatesResponseMono = xchangeService.getRatesForSpecifiedDate(type, type);
+        Mono<FxRates> exchangeRatesResponseMono = xchangeService.getRatesForSpecifiedDate(type, date);
 
         return ResponseEntity.ok(
                 Mono.zip(exchangeRatesResponseMono, exchangeRatesResponseMono,
