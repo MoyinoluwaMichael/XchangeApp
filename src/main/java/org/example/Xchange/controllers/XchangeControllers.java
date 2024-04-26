@@ -20,13 +20,29 @@ import reactor.core.publisher.Mono;
 public class XchangeControllers {
     private final XchangeService xchangeService;
 
-    @Operation(summary = "Retrieve exchange rates")
-    @GetMapping("/rates")
-    public ResponseEntity<Mono<RestApiResponse<FxRates>>> getExchangeRates(
-            @RequestParam(name = "type") String type
+    @Operation(summary = "Retrieve current exchange rates")
+    @GetMapping("/currentRates")
+    public ResponseEntity<Mono<RestApiResponse<FxRates>>> getCurrentExchangeRates(
+            @RequestParam(name = "type", required = false) String type
     ) {
 
-        Mono<FxRates> exchangeRatesResponseMono = xchangeService.getExchangeRates(type);
+        Mono<FxRates> exchangeRatesResponseMono = xchangeService.getCurrentExchangeRates(type);
+
+        return ResponseEntity.ok(
+                Mono.zip(exchangeRatesResponseMono, exchangeRatesResponseMono,
+                        (client, ctx) -> ResponseAssembler.toResponse(HttpStatus.OK, client, "Exchange rates retrieved successfully"))
+        );
+
+    }
+
+    @Operation(summary = "Retrieve exchange rates for the specified date")
+    @GetMapping("/rates")
+    public ResponseEntity<Mono<RestApiResponse<FxRates>>> getRatesForSpecifiedDate(
+            @RequestParam(name = "type", required = false) String type,
+            @RequestParam(name = "date") String date
+    ) {
+
+        Mono<FxRates> exchangeRatesResponseMono = xchangeService.getRatesForSpecifiedDate(type, date);
 
         return ResponseEntity.ok(
                 Mono.zip(exchangeRatesResponseMono, exchangeRatesResponseMono,
