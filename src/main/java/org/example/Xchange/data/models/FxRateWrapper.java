@@ -1,5 +1,4 @@
-package org.example.Xchange.models;
-
+package org.example.Xchange.data.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,8 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FxRateSingleWrapper extends FxRateWrapper {
+public class FxRateWrapper implements Serializable {
 
-    @JsonProperty("FxRate")
-    private FxRateListWrapper.FxRate fxRates;
+    @JsonProperty("OprlErr")
+    private FxRateListWrapper.ApiError error;
 }

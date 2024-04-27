@@ -1,4 +1,5 @@
-package org.example.Xchange.models;
+package org.example.Xchange.data.models;
+
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,15 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FxRateWrapper implements Serializable {
+public class FxRateSingleWrapper extends FxRateWrapper {
 
-    @JsonProperty("OprlErr")
-    private FxRateListWrapper.ApiError error;
+    @JsonProperty("FxRate")
+    private FxRateListWrapper.FxRate fxRates;
 }

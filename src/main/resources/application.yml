@@ -4,6 +4,12 @@ spring:
   application:
     name: xchange
 
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:xchangedb
+    username: xchange
+    password: password
+
 xchange:
   integration:
     lithuaniaBaseUrl: https://www.lb.lt
