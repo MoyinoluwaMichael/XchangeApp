@@ -1,10 +1,11 @@
-package org.example.Xchange.dtos.response;
+package org.example.xchange.dtos.response;
 
 import lombok.*;
-import org.example.Xchange.data.models.FxRateListWrapper;
+import org.example.xchange.data.models.FxRateListWrapper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,4 +19,5 @@ public class CurrencyConverterResponse implements Serializable {
     private BigDecimal amount;
     private BigDecimal conversionAmount;
     private FxRateListWrapper.FxRate rate;
+    private List<FxRateListWrapper.FxRate> rateHistory;
 }

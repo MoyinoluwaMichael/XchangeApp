@@ -1,4 +1,4 @@
-package org.example.Xchange.configuration.jackson;
+package org.example.xchange.configuration.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;

@@ -1,4 +1,4 @@
-package org.example.Xchange.exception;
+package org.example.xchange.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

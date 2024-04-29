@@ -1,4 +1,4 @@
-package org.example.Xchange.configuration.security.xss;
+package org.example.xchange.configuration.security.xss;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanProperty;

@@ -1,12 +1,12 @@
-package org.example.Xchange.controllers;
+package org.example.xchange.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.example.Xchange.dtos.request.CurrencyConverterRequest;
-import org.example.Xchange.dtos.response.CurrencyConverterResponse;
-import org.example.Xchange.dtos.response.base.RestApiResponse;
-import org.example.Xchange.dtos.response.base.transformer.ResponseAssembler;
-import org.example.Xchange.services.currencyConverterServices.CurrencyConverterService;
+import org.example.xchange.dtos.request.CurrencyConverterRequest;
+import org.example.xchange.dtos.response.CurrencyConverterResponse;
+import org.example.xchange.dtos.response.base.RestApiResponse;
+import org.example.xchange.dtos.response.base.transformer.ResponseAssembler;
+import org.example.xchange.services.currencyConverterServices.CurrencyConverterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

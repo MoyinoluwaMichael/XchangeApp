@@ -1,13 +1,13 @@
-package org.example.Xchange.jobs;
+package org.example.xchange.jobs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.Xchange.data.models.FxRate;
-import org.example.Xchange.data.models.FxRateListWrapper;
-import org.example.Xchange.data.repositories.FxRateRepository;
-import org.example.Xchange.services.xchangeServices.XchangeService;
+import org.example.xchange.data.models.FxRate;
+import org.example.xchange.data.models.FxRateListWrapper;
+import org.example.xchange.data.repositories.FxRateRepository;
+import org.example.xchange.services.xchangeServices.XchangeService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

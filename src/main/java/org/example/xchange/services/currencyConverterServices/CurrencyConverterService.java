@@ -1,7 +1,7 @@
-package org.example.Xchange.services.currencyConverterServices;
+package org.example.xchange.services.currencyConverterServices;
 
-import org.example.Xchange.dtos.request.CurrencyConverterRequest;
-import org.example.Xchange.dtos.response.CurrencyConverterResponse;
+import org.example.xchange.dtos.request.CurrencyConverterRequest;
+import org.example.xchange.dtos.response.CurrencyConverterResponse;
 import reactor.core.publisher.Mono;
 
 public interface CurrencyConverterService {

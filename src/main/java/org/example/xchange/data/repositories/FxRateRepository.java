@@ -1,6 +1,6 @@
-package org.example.Xchange.data.repositories;
+package org.example.xchange.data.repositories;
 
-import org.example.Xchange.data.models.FxRate;
+import org.example.xchange.data.models.FxRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FxRateRepository extends JpaRepository<FxRate, Long> {

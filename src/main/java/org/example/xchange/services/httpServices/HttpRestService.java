@@ -1,4 +1,4 @@
-package org.example.Xchange.services.httpServices;
+package org.example.xchange.services.httpServices;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,11 +8,11 @@ import io.netty.channel.ConnectTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.Xchange.configuration.XchangeProperty;
-import org.example.Xchange.exception.ApiException;
-import org.example.Xchange.data.models.FxRateListWrapper;
-import org.example.Xchange.data.models.FxRateSingleWrapper;
-import org.example.Xchange.data.models.FxRateWrapper;
+import org.example.xchange.configuration.XchangeProperty;
+import org.example.xchange.exception.ApiException;
+import org.example.xchange.data.models.FxRateListWrapper;
+import org.example.xchange.data.models.FxRateSingleWrapper;
+import org.example.xchange.data.models.FxRateWrapper;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;

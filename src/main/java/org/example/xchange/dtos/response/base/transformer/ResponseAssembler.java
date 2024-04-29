@@ -1,9 +1,9 @@
-package org.example.Xchange.dtos.response.base.transformer;
+package org.example.xchange.dtos.response.base.transformer;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.example.Xchange.dtos.response.base.ResponseCode;
-import org.example.Xchange.dtos.response.base.RestApiResponse;
+import org.example.xchange.dtos.response.base.ResponseCode;
+import org.example.xchange.dtos.response.base.RestApiResponse;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
