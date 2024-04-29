@@ -1,6 +1,5 @@
-package org.example.Xchange.data.models;
+package org.example.xchange.data.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;

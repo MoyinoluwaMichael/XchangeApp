@@ -1,5 +1,7 @@
 FROM maven:3.8.5-openjdk-17 AS build
-COPY ../.. .
+COPY pom.xml .
+COPY src src
+
 RUN mvn clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim

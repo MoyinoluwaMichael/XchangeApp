@@ -1,4 +1,4 @@
-package org.example.Xchange.data.models;
+package org.example.xchange.data.models;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

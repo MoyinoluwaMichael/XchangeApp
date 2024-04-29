@@ -1,4 +1,4 @@
-package org.example.Xchange.dtos.response.base;
+package org.example.xchange.dtos.response.base;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

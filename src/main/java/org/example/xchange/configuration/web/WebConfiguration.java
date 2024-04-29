@@ -1,4 +1,4 @@
-package org.example.Xchange.configuration.web;
+package org.example.xchange.configuration.web;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;

@@ -1,11 +1,11 @@
-package org.example.Xchange.controllers;
+package org.example.xchange.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.example.Xchange.dtos.response.base.RestApiResponse;
-import org.example.Xchange.dtos.response.base.transformer.ResponseAssembler;
-import org.example.Xchange.data.models.FxRateWrapper;
-import org.example.Xchange.services.xchangeServices.XchangeService;
+import org.example.xchange.dtos.response.base.RestApiResponse;
+import org.example.xchange.dtos.response.base.transformer.ResponseAssembler;
+import org.example.xchange.data.models.FxRateWrapper;
+import org.example.xchange.services.xchangeServices.XchangeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,5 @@
-package org.example.Xchange.dtos.request;
+package org.example.xchange.dtos.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

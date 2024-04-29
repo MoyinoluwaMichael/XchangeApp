@@ -1,6 +1,6 @@
-package org.example.Xchange.services.xchangeServices;
+package org.example.xchange.services.xchangeServices;
 
-import org.example.Xchange.data.models.FxRateWrapper;
+import org.example.xchange.data.models.FxRateWrapper;
 import reactor.core.publisher.Mono;
 
 public interface XchangeService {

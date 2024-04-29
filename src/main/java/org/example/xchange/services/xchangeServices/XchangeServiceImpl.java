@@ -1,11 +1,11 @@
-package org.example.Xchange.services.xchangeServices;
+package org.example.xchange.services.xchangeServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.Xchange.exception.ValidationException;
-import org.example.Xchange.data.models.FxRateWrapper;
-import org.example.Xchange.services.httpServices.HttpRestService;
-import org.example.Xchange.util.LoggingHelper;
+import org.example.xchange.exception.ValidationException;
+import org.example.xchange.data.models.FxRateWrapper;
+import org.example.xchange.services.httpServices.HttpRestService;
+import org.example.xchange.util.LoggingHelper;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
