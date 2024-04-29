@@ -6,7 +6,6 @@ import org.example.Xchange.dtos.request.CurrencyConverterRequest;
 import org.example.Xchange.dtos.response.CurrencyConverterResponse;
 import org.example.Xchange.dtos.response.base.RestApiResponse;
 import org.example.Xchange.dtos.response.base.transformer.ResponseAssembler;
-import org.example.Xchange.models.FxRateWrapper;
 import org.example.Xchange.services.currencyConverterServices.CurrencyConverterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

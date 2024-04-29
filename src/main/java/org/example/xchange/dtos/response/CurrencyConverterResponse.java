@@ -1,7 +1,7 @@
 package org.example.Xchange.dtos.response;
 
 import lombok.*;
-import org.example.Xchange.models.FxRateListWrapper;
+import org.example.Xchange.data.models.FxRateListWrapper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.example.Xchange.dtos.response.base.RestApiResponse;
 import org.example.Xchange.dtos.response.base.transformer.ResponseAssembler;
-import org.example.Xchange.models.FxRateWrapper;
+import org.example.Xchange.data.models.FxRateWrapper;
 import org.example.Xchange.services.xchangeServices.XchangeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

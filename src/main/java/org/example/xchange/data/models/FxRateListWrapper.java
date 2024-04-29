@@ -1,4 +1,4 @@
-package org.example.Xchange.models;
+package org.example.Xchange.data.models;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,6 +25,7 @@ public class FxRateListWrapper extends FxRateWrapper {
 
     @Setter
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class FxRate {
 
         @JsonProperty("Tp")
@@ -39,6 +40,7 @@ public class FxRateListWrapper extends FxRateWrapper {
 
         @Setter
         @Getter
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         public static class CurrencyAmount {
 
             @JsonProperty("Ccy")

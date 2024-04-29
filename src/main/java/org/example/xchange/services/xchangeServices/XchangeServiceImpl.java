@@ -3,7 +3,7 @@ package org.example.Xchange.services.xchangeServices;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.Xchange.exception.ValidationException;
-import org.example.Xchange.models.FxRateWrapper;
+import org.example.Xchange.data.models.FxRateWrapper;
 import org.example.Xchange.services.httpServices.HttpRestService;
 import org.example.Xchange.util.LoggingHelper;
 import org.springframework.stereotype.Service;
