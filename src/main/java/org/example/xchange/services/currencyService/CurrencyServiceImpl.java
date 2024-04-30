@@ -23,17 +23,23 @@ public class CurrencyServiceImpl implements CurrencyService{
         return xchangeService.getCurrentExchangeRates(rateType).flatMap(
                 currencyListResponse -> {
                     FxRateListWrapper fxRateListWrapper = (FxRateListWrapper) currencyListResponse;
-                    for (var fxRate: fxRateListWrapper.getFxRates()) {
-                        CurrencyList.Currency currency = new CurrencyList.Currency();
-                        currency.setIsoCode(fxRate.getCurrencyAmountList().get(1).getCurrency().toUpperCase(Locale.ROOT));
-                        currencies.add(currency);
-                        System.out.println("CURRENCY;;?? "+currency);
+                    Set<String> seenCurrencies = new HashSet<>();
+                    for (var fxRate : fxRateListWrapper.getFxRates()) {
+                        String isoCode = fxRate.getCurrencyAmountList().get(1).getCurrency().toUpperCase(Locale.ROOT);
+                        if (!seenCurrencies.contains(isoCode)) {
+                            CurrencyList.Currency currency = new CurrencyList.Currency();
+                            currency.setIsoCode(isoCode);
+                            currencies.add(currency);
+                            seenCurrencies.add(isoCode); // Add the currency to the set of seen currencies
+                        }
                     }
-                    CurrencyList currencyList = new CurrencyList();
                     currencies.sort(Comparator.comparing(CurrencyList.Currency::getIsoCode));
+
+                    CurrencyList currencyList = new CurrencyList();
                     currencyList.setCurrencies(currencies);
                     return Mono.just(currencyList);
                 }
         );
     }
 }
+
