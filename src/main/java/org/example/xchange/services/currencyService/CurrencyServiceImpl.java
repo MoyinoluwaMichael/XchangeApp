@@ -27,6 +27,7 @@ public class CurrencyServiceImpl implements CurrencyService{
                         CurrencyList.Currency currency = new CurrencyList.Currency();
                         currency.setIsoCode(fxRate.getCurrencyAmountList().get(1).getCurrency().toUpperCase(Locale.ROOT));
                         currencies.add(currency);
+                        System.out.println("CURRENCY;;?? "+currency);
                     }
                     CurrencyList currencyList = new CurrencyList();
                     currencies.sort(Comparator.comparing(CurrencyList.Currency::getIsoCode));
