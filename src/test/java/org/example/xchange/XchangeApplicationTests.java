@@ -5,7 +5,6 @@ import org.example.xchange.data.models.FxRateSingleWrapper;
 import org.example.xchange.dtos.request.CurrencyConverterRequest;
 import org.example.xchange.services.currencyConverterServices.CurrencyConverterService;
 import org.example.xchange.services.xchangeServices.XchangeService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,9 +36,8 @@ class XchangeApplicationTests {
 
     @Test
     void testGetFxRatesForCurrency() {
-        xchangeService.getFxRatesForCurrency(
-                "lt", "USD", "2022-01-23", "2022-02-23"
-        ).subscribe(
+        xchangeService.getFxRatesHistoryForCurrency(
+                "lt", "USD", "2022-01-23", "2022-02-23", "2022-02-23", currencyConverterService).subscribe(
                 response -> {
                     assertNotNull(response);
                     FxRateListWrapper fxRates = (FxRateListWrapper) response;
@@ -72,9 +70,8 @@ class XchangeApplicationTests {
                     assertNotNull(currencyConversionResponse);
 
                     String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    xchangeService.getFxRatesForCurrency(
-                            "lt", "NGN", currentDate, currentDate
-                    ).subscribe(
+                    xchangeService.getFxRatesHistoryForCurrency(
+                            "lt", "EUR", "USD", currentDate, currentDate, currencyConverterService).subscribe(
                             getFxRatesForCurrencyResponse -> {
                                 assertNotNull(getFxRatesForCurrencyResponse);
                                 FxRateSingleWrapper fxRates = (FxRateSingleWrapper) getFxRatesForCurrencyResponse;
