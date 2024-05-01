@@ -18,13 +18,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static org.example.xchange.util.AppUtils.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CurrencyConverterServiceImpl implements CurrencyConverterService {
     private final XchangeService xchangeService;
-    private final String EUR = "EUR";
-    private final String APP_DATE_FORMAT = "yyyy-MM-dd";
     String ONE_DAY_AGO = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern(APP_DATE_FORMAT));
     String FIVE_DAYS_AGO = LocalDate.now().minusDays(5).format(DateTimeFormatter.ofPattern(APP_DATE_FORMAT));
     String ONE_MONTH_AGO = LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern(APP_DATE_FORMAT));
@@ -53,7 +53,7 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
                             targetCurrencyRateResponse -> {
                                 FxRateSingleWrapper targetCurrencyRate = (FxRateSingleWrapper) targetCurrencyRateResponse;
                                 BigDecimal targetExchangeRate = BigDecimal.ONE.divide(targetCurrencyRate.getFxRates().getCurrencyAmountList().get(1).getAmount(), 50, RoundingMode.HALF_UP);
-                                FxRateListWrapper.FxRate fxRates = calculateInterCurrencyConversionRates(currentDateInString, currencyConverterRequest, baseExchangeRate, targetExchangeRate);
+                                FxRateListWrapper.FxRate fxRates = calculateInterCurrencyConversionRates(currentDateInString, currencyConverterRequest.getRateType(), currencyConverterRequest.getBaseCurrency(),currencyConverterRequest.getTargetCurrency(), baseExchangeRate, targetExchangeRate);
                                 BigDecimal exchangeRate = fxRates.getCurrencyAmountList().get(1).getAmount();
                                 BigDecimal conversionAmount = currencyConverterRequest.getAmount().multiply(exchangeRate).setScale(5, RoundingMode.HALF_UP);
                                 return fetchInterRateHistory(currencyConverterRequest)
@@ -74,19 +74,19 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
         );
     }
 
-    private FxRateListWrapper.FxRate calculateInterCurrencyConversionRates(String date, CurrencyConverterRequest currencyConverterRequest, BigDecimal baseExchangeRate, BigDecimal targetExchangeRate) {
+    private FxRateListWrapper.FxRate calculateInterCurrencyConversionRates(String date, String rateType, String baseCurrency, String targetCurrency, BigDecimal baseExchangeRate, BigDecimal targetExchangeRate) {
         System.err.println("baseExchangeRate::>> "+baseExchangeRate);
         System.err.println("targetExchangeRate::>> "+targetExchangeRate);
         BigDecimal exchangeRate = baseExchangeRate.divide(targetExchangeRate, 50, RoundingMode.HALF_UP);
         System.err.println("exchangeRate::>> "+exchangeRate);
         FxRateListWrapper.FxRate fxRate = new FxRateListWrapper.FxRate();
         fxRate.setDate(date);
-        fxRate.setType(currencyConverterRequest.getRateType());
+        fxRate.setType(rateType);
         FxRateListWrapper.FxRate.CurrencyAmount baseCurrencyAmount = new FxRateListWrapper.FxRate.CurrencyAmount();
-        baseCurrencyAmount.setCurrency(currencyConverterRequest.getBaseCurrency());
+        baseCurrencyAmount.setCurrency(baseCurrency);
         baseCurrencyAmount.setAmount(BigDecimal.ONE);
         FxRateListWrapper.FxRate.CurrencyAmount targetCurrencyAmount = new FxRateListWrapper.FxRate.CurrencyAmount();
-        targetCurrencyAmount.setCurrency(currencyConverterRequest.getTargetCurrency());
+        targetCurrencyAmount.setCurrency(targetCurrency);
         targetCurrencyAmount.setAmount(exchangeRate.setScale(5, RoundingMode.HALF_UP));
         fxRate.setCurrencyAmountList(List.of(baseCurrencyAmount, targetCurrencyAmount));
         return fxRate;
@@ -217,18 +217,13 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
                 );
     }
 
-    private FxRateListWrapper.FxRate getInterCurrencyRateForASpecificDate(FxRateSingleWrapper baseCurrencyRate, FxRateSingleWrapper targetCurrencyRate, CurrencyConverterRequest currencyConverterRequest, String date) {
+    @Override
+    public FxRateListWrapper.FxRate getInterCurrencyRateForASpecificDate(FxRateSingleWrapper baseCurrencyRate, FxRateSingleWrapper targetCurrencyRate, CurrencyConverterRequest currencyConverterRequest, String date) {
         BigDecimal baseExchangeRateAmount = baseCurrencyRate.getFxRates().getCurrencyAmountList().get(1).getAmount();
         BigDecimal baseExchangeRate = BigDecimal.ONE.divide(baseExchangeRateAmount, 50, RoundingMode.HALF_UP);
         BigDecimal targetExchangeRateAmount = targetCurrencyRate.getFxRates().getCurrencyAmountList().get(1).getAmount();
         BigDecimal targetExchangeRate = BigDecimal.ONE.divide(targetExchangeRateAmount, 50, RoundingMode.HALF_UP);;
-        return calculateInterCurrencyConversionRates(date, currencyConverterRequest, baseExchangeRate, targetExchangeRate);
-    }
-
-    private String getCurrentDateInString() {
-        LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(APP_DATE_FORMAT);
-        return currentDate.format(formatter);
+        return calculateInterCurrencyConversionRates(date, currencyConverterRequest.getRateType(), currencyConverterRequest.getBaseCurrency(),currencyConverterRequest.getTargetCurrency(), baseExchangeRate, targetExchangeRate);
     }
 
     private void validateRequestPayload(CurrencyConverterRequest currencyConverterRequest) {
@@ -241,6 +236,6 @@ public class CurrencyConverterServiceImpl implements CurrencyConverterService {
     }
 
     private Mono<FxRateWrapper> getCurrencyRate(String currency, String rateType, String currentDateInString) {
-        return xchangeService.getFxRatesForCurrency(rateType, currency, currentDateInString, currentDateInString);
+        return xchangeService.getLithuaniaFxRatesHistoryForCurrency(rateType, currency, currentDateInString, currentDateInString);
     }
 }

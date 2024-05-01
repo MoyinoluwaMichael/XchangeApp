@@ -1,6 +1,7 @@
 package org.example.xchange.services.xchangeServices;
 
 import org.example.xchange.data.models.FxRateWrapper;
+import org.example.xchange.services.currencyConverterServices.CurrencyConverterService;
 import reactor.core.publisher.Mono;
 
 public interface XchangeService {
@@ -8,5 +9,6 @@ public interface XchangeService {
 
     Mono<FxRateWrapper> getRatesForSpecifiedDate(String type, String date);
 
-    Mono<FxRateWrapper> getFxRatesForCurrency(String type, String currency, String dateFrom, String dateTo);
+    Mono<FxRateWrapper> getFxRatesHistoryForCurrency(String type, String baseCurrency, String targetCurrency, String dateFrom, String dateTo, CurrencyConverterService currencyConverterService);
+    Mono<FxRateWrapper> getLithuaniaFxRatesHistoryForCurrency(String type, String currency, String dateFrom, String dateTo);
 }

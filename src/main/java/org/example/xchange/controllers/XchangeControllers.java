@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.xchange.dtos.response.base.RestApiResponse;
 import org.example.xchange.dtos.response.base.transformer.ResponseAssembler;
 import org.example.xchange.data.models.FxRateWrapper;
+import org.example.xchange.services.currencyConverterServices.CurrencyConverterService;
 import org.example.xchange.services.xchangeServices.XchangeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
+import static org.example.xchange.util.AppUtils.getCurrentDateInString;
+
 @RequestMapping("/xchange")
 @RestController
 @RequiredArgsConstructor
 public class XchangeControllers {
     private final XchangeService xchangeService;
+    private final CurrencyConverterService currencyConverterService;
 
     @Operation(summary = "Retrieve current exchange rates")
     @GetMapping("/getCurrentExchangeRates")
@@ -52,16 +58,19 @@ public class XchangeControllers {
     }
 
 
-    @Operation(summary = "Retrieve Exchange Rates between specified dates")
+    @Operation(summary = "Retrieve Exchange Rates between specified dates for a specific currency")
     @GetMapping("/getFxRatesForCurrency")
     public ResponseEntity<Mono<RestApiResponse<FxRateWrapper>>> getFxRatesForCurrency(
             @RequestParam(name = "type", required = false) String type,
-            @RequestParam(name = "currency") String currency,
+            @RequestParam(name = "baseCurrency") String baseCurrency,
+            @RequestParam(name = "targetCurrency") String targetCurrency,
             @RequestParam(name = "dateFrom") String dateFrom,
             @RequestParam(name = "dateTo") String dateTo
     ) {
-
-        Mono<FxRateWrapper> exchangeRatesResponseMono = xchangeService.getFxRatesForCurrency(type, currency, dateFrom, dateTo);
+        dateTo = dateTo == null ? getCurrentDateInString() : dateTo;
+        Mono<FxRateWrapper> exchangeRatesResponseMono = xchangeService.getFxRatesHistoryForCurrency(
+                type, baseCurrency, targetCurrency, dateFrom, dateTo, currencyConverterService
+        );
 
         return ResponseEntity.ok(
                 Mono.zip(exchangeRatesResponseMono, exchangeRatesResponseMono,
