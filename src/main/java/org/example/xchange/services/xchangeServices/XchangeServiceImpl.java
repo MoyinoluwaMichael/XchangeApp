@@ -9,6 +9,7 @@ import org.example.xchange.exception.ValidationException;
 import org.example.xchange.data.models.FxRateWrapper;
 import org.example.xchange.services.currencyConverterServices.CurrencyConverterService;
 import org.example.xchange.services.httpServices.HttpRestService;
+import org.example.xchange.services.internalServices.InternalService;
 import org.example.xchange.util.LoggingHelper;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -18,12 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.xchange.util.AppUtils.EUR;
+import static org.example.xchange.util.AppUtils.getCurrentDateInString;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class XchangeServiceImpl implements XchangeService {
     private final HttpRestService httpRestService;
+    private final InternalService internalService;
     private final LoggingHelper loggingHelper;
 
     @Override
@@ -88,12 +91,18 @@ public class XchangeServiceImpl implements XchangeService {
         String getFxRatesForCurrencyEndpoint = "/getFxRatesForCurrency?tp=%s&ccy=%s&dtFrom=%s&dtTo=%s";
         String endpointPath = String.format(getFxRatesForCurrencyEndpoint, type, currency, dateFrom, dateTo);
         URI uri = httpRestService.constructUriForEndpoint(endpointPath);
-        return this.httpRestService.get(uri)
-                .map(getExchangeRatesResponse -> {
-                    log.info("Exchange Rates Retrieved Successfully ::");
-                    loggingHelper.logRequest(getExchangeRatesResponse);
-                    return getExchangeRatesResponse;
-                });
+        String currentDateInString = getCurrentDateInString();
+        boolean isCurrentData = dateFrom.equalsIgnoreCase(currentDateInString) && dateTo.equalsIgnoreCase(currentDateInString);
+        if (isCurrentData) {
+            return Mono.just(this.internalService.getLithuaniaFxRatesHistoryForCurrency(type, currency, dateFrom, dateTo));
+        } else {
+            return this.httpRestService.get(uri)
+                    .map(getExchangeRatesResponse -> {
+                        log.info("Exchange Rates Retrieved Successfully ::");
+                        loggingHelper.logRequest(getExchangeRatesResponse);
+                        return getExchangeRatesResponse;
+                    });
+        }
     }
 
     private Mono<FxRateWrapper> interCurrencyRateHistory(String baseCurrency, String targetCurrency, String rateType, String dateFrom, String dateTo, CurrencyConverterService currencyConverterService) {
@@ -117,8 +126,7 @@ public class XchangeServiceImpl implements XchangeService {
                                             convertedRates.add(specificRate);
                                         }
                                         result.setFxRates(convertedRates);
-                                    }
-                                    else {
+                                    } else {
                                         FxRateSingleWrapper baseCurrencyRate = (FxRateSingleWrapper) baseCurrencyRateResponse;
                                         FxRateSingleWrapper targetCurrencyRate = (FxRateSingleWrapper) targetCurrencyRateResponse;
                                         String date = baseCurrencyRate.getFxRates().getDate();
