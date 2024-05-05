@@ -30,7 +30,7 @@ public class CurrencyServiceImpl implements CurrencyService{
                             CurrencyList.Currency currency = new CurrencyList.Currency();
                             currency.setIsoCode(isoCode);
                             currencies.add(currency);
-                            seenCurrencies.add(isoCode); // Add the currency to the set of seen currencies
+                            seenCurrencies.add(isoCode);
                         }
                     }
                     currencies.sort(Comparator.comparing(CurrencyList.Currency::getIsoCode));

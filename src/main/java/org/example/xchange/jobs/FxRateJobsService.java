@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.xchange.data.models.FxRate;
 import org.example.xchange.data.models.FxRateListWrapper;
 import org.example.xchange.data.repositories.FxRateRepository;
+import org.example.xchange.services.internalServices.InternalService;
 import org.example.xchange.services.xchangeServices.XchangeService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,11 +17,15 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FxRateJobsService {
     private final XchangeService xchangeService;
-    private final FxRateRepository fxRateRepository;
+    private final InternalService internalService;
 
 //    @Scheduled(cron = "0 * * * * ?") // Scheduled for every minute
     @Scheduled(cron = "0 0 0 * * ?") // Scheduled for 12am daily
     public void scheduleFxRateRetrieval(){
+        retrieveCurrentLithuaniaData();
+    }
+
+    public void retrieveCurrentLithuaniaData() {
         String LT = "lt";
         fetchCurrentRateFor(LT);
         String EU = "eu";
@@ -35,7 +40,7 @@ public class FxRateJobsService {
                         ObjectMapper objectMapper = new ObjectMapper();
                         try {
                             FxRate persistableFxRate = objectMapper.readValue(objectMapper.writeValueAsString(fxRate), FxRate.class);
-                            FxRate savedRate = fxRateRepository.save(persistableFxRate);
+                            FxRate savedRate = internalService.save(persistableFxRate);
                             log.info("FX Rate Saved::>> "+ objectMapper.writeValueAsString(savedRate));
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
